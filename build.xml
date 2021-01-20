@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="signal" basedir=".">
+
+  <dirname property="app.basedir" file="${ant.file.signal}"/>
+  <property name="build.properties" value="${app.basedir}/build.properties"/>
+  <property file="${build.properties}"/>
+
+  <!-- Load Portapps core build -->
+  <property name="core.basedir" location="${app.basedir}\${core.dir}"/>
+  <fail unless="core.basedir" message="Core directory '${core.basedir}' not found in ${core.basedir}"/>
+  <echo message="Core found in ${core.basedir}" level="debug"/>
+
+  <!-- Import build-app.xml  -->
+  <import file="${core.basedir}\.build\build-app.xml"/>
+
+  <!-- Targets -->
+  <target name="release" depends="release.app" description="Release"/>
+
+  <target name="prepare" depends="load.lib.asar">
+    <echo message="Preparing release..."/>
+
+    <echo message="Extracting embedded ${atf.arch} archive"/>
+    <property name="extract.path2" value="${tmp.path}\extract2"/>
+    <if>
+      <equals arg1="${atf.arch}" arg2="win32"/>
+      <then>
+        <sevenzip-ax src="${extract.path}\$PLUGINSDIR\app-32.7z" dest="${extract.path2}"/>
+      </then>
+      <else>
+        <sevenzip-ax src="${extract.path}\$PLUGINSDIR\app-64.7z" dest="${extract.path2}"/>
+      </else>
+    </if>
+    <delete dir="${extract.path}"/>
+    <move todir="${extract.path}">
+      <fileset dir="${extract.path2}" defaultexcludes="no"/>
+    </move>
+
+    <echo message="Extracting app.asar..."/>
+    <exec executable="asar.cmd" failonerror="true" dir="${extract.path}\resources">
+      <arg value="extract"/>
+      <arg value="app.asar"/>
+      <arg value="app"/>
+    </exec>
+
+    <echo message="Replacing in app.asar..."/>
+    <assertfile file="${extract.path}\resources\app\${electron.appasar.file}"/>
+    <replace file="${extract.path}\resources\app\${electron.appasar.file}" failOnNoReplacements="true">
+      <replacefilter token="${electron.appasar.search}" value="${electron.appasar.replace}"/>
+    </replace>
+
+    <echo message="Removing app.asar..."/>
+    <delete file="${extract.path}\resources\app.asar"/>
+  </target>
+
+</project>
