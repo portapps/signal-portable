@@ -50,6 +50,14 @@
 
     <echo message="Removing app.asar..."/>
     <delete file="${extract.path}\resources\app.asar"/>
+
+    <echo message="Packaging app..."/>
+    <exec executable="asar.cmd" failonerror="true" dir="${extract.path}\resources">
+      <arg value="pack"/>
+      <arg value="app"/>
+      <arg value="app.asar"/>
+    </exec>
+    <delete dir="${extract.path}\resources\app"/>
   </target>
 
 </project>
