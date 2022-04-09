@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.38.0-7 (2022/04/09)
+
+* Signal 5.38.0 (#22)
+* Fix asar packaging (#21)
+* Portapps 3.5.0
+
 ## 5.34.0-6 (2022/03/06)
 
 * Signal 5.34.0
