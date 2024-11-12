@@ -58,6 +58,9 @@
       <arg value="app.asar"/>
     </exec>
     <delete dir="${extract.path}\resources\app"/>
+
+    <gn-asar-hash archive="${extract.path}\resources\app.asar" property="asarhash"/>
+    <resourcehacker-a-integrity exe="${extract.path}\Signal.exe" hash="${asarhash}"/>
   </target>
 
 </project>
